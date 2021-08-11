@@ -1,3 +1,3 @@
-module github.com/dgrijalva/jwt-go
+module github.com/akeylesslabs/jwt-go/v3
 
-go 1.15
+go 1.16
