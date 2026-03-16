@@ -10,20 +10,15 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, substrate, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = import nixpkgs { inherit system; };
-      mkGoLibraryCheck = (import "${substrate}/lib/go-library-check.nix").mkGoLibraryCheck;
-    in {
-      checks.default = mkGoLibraryCheck pkgs {
-        pname = "jwt-go";
-        version = "0.0.0-dev";
-        src = self;
-        vendorHash = null;
-      };
-
-      devShells.default = pkgs.mkShellNoCC {
-        packages = with pkgs; [ go gopls gotools ];
-      };
-    });
+  outputs = inputs: (import "${inputs.substrate}/lib/repo-flake.nix" {
+    inherit (inputs) nixpkgs flake-utils;
+  }) {
+    self = inputs.self;
+    language = "go";
+    builder = "library";
+    pname = "jwt-go";
+    vendorHash = null;
+    description = "Go implementation of JSON Web Tokens (JWT)";
+    homepage = "https://github.com/pleme-io/jwt-go";
+  };
 }
